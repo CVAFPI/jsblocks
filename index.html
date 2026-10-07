@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>JSBlock — JavaScript Blocks</title>
-<link rel="stylesheet" href="style.css?v=20261007-5">
-<script defer src="vendor/blockly/blockly.min.js"></script>
-<script defer src="vendor/blockly/javascript_compressed.js"></script>
-<script defer src="vendor/acorn/acorn.js"></script>
-<script defer src="app.js?v=20261007-5"></script>
+<link rel="stylesheet" href="style.css?v=20261007-6">
+<script defer src="vendor/blockly/blockly.min.js?v=20261007-6"></script>
+<script defer src="vendor/blockly/javascript_compressed.js?v=20261007-6"></script>
+<script defer src="vendor/acorn/acorn.js?v=20261007-6"></script>
+<script defer src="app.js?v=20261007-6"></script>
 </head>
 <body>
 <header>
@@ -37,6 +37,11 @@
     <h3>Block Library</h3>
     <div class="block-search"><input id="blockSearch" type="search" placeholder="Search blocks..." aria-label="Search blocks"><kbd>Ctrl /</kbd></div>
     <div class="category">
+      <div class="cat-title">Game templates</div>
+      <button class="template-block" data-template="move">▶ Player movement</button>
+      <button class="template-block" data-template="coins">● Coin collector</button>
+      <button class="template-block" data-template="dodge">◆ Falling dodge</button>
+      <button class="template-block" data-template="stars">✦ Starfield runner</button>
       <div class="cat-title">JavaScript</div>
       <button data-block="console_log">▣ Console log</button>
       <button data-block="console_table">▦ Console table</button>
@@ -53,10 +58,6 @@
       <button data-block="comment">☰ Comment</button>
       <button data-block="js_source">JS JavaScript statement</button>
       <div class="cat-title">Game</div>
-      <button class="template-block" data-template="move">▶ Player movement</button>
-      <button class="template-block" data-template="coins">● Coin collector</button>
-      <button class="template-block" data-template="dodge">◆ Falling dodge</button>
-      <button class="template-block" data-template="stars">✦ Starfield runner</button>
       <button data-block="game_loop">↻ On every frame</button>
       <button data-block="clear_canvas">▧ Clear screen</button>
       <button data-block="draw_rect">▰ Draw rectangle</button>

@@ -1,5 +1,7 @@
-const JS = javascript.javascriptGenerator;
-const define = Blockly.common.defineBlocksWithJsonArray;
+const BlocklyApi=globalThis.Blockly;
+const JS=globalThis.javascript?.javascriptGenerator||BlocklyApi?.JavaScript;
+if(!BlocklyApi||!JS)throw new Error("Blockly failed to load. Reload the page to fetch the versioned local scripts.");
+const define=BlocklyApi.common.defineBlocksWithJsonArray;
 
 define([
  {type:"console_log",message0:"console.log %1",args0:[{type:"input_value",name:"VALUE"}],previousStatement:null,nextStatement:null,colour:210},
