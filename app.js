@@ -13,7 +13,7 @@ define([
  {type:"return",message0:"return %1",args0:[{type:"input_value",name:"VALUE"}],previousStatement:null,nextStatement:null,colour:290},
  {type:"comment",message0:"// %1",args0:[{type:"field_input",name:"TEXT",text:"comment"}],previousStatement:null,nextStatement:null,colour:60},
  {type:"js_source",message0:"%1 %2",args0:[{type:"field_input",name:"KIND",text:"JavaScript"},{type:"field_input",name:"CODE",text:"console.log('hello');"}],previousStatement:null,nextStatement:null,colour:45},
- {type:"text",message0:"%1",args0:[{type:"field_input",name:"TEXT",text:"Hello world"}],output:null,colour:160},
+ {type:"jsblock_text",message0:"%1",args0:[{type:"field_input",name:"TEXT",text:"Hello world"}],output:null,colour:160},
  {type:"number",message0:"%1",args0:[{type:"field_number",name:"N",value:0}],output:null,colour:160},
  {type:"boolean",message0:"%1",args0:[{type:"field_dropdown",name:"V",options:[["true","true"],["false","false"]]}],output:null,colour:160},
  {type:"math",message0:"%1 %2 %3",args0:[{type:"input_value",name:"A"},{type:"field_dropdown",name:"OP",options:[["+","+"],["-","-"],["×","*"],["÷","/"],["===","==="],[">",">"],["<","<"] ]},{type:"input_value",name:"B"}],output:null,colour:160},
@@ -59,7 +59,7 @@ function gen(block){
     case"return":return `return ${val("VALUE")};\n`;
     case"comment":return `// ${block.getFieldValue("TEXT")||""}\n`;
     case"js_source":return block.getFieldValue("CODE")||"";
-    case"text":return [JSON.stringify(block.getFieldValue("TEXT")||""),JS.ORDER_ATOMIC];
+    case"jsblock_text":return [JSON.stringify(block.getFieldValue("TEXT")||""),JS.ORDER_ATOMIC];
     case"number":return [String(Number(block.getFieldValue("N"))||0),JS.ORDER_ATOMIC];
     case"boolean":return [block.getFieldValue("V")||"true",JS.ORDER_ATOMIC];
     case"math":return [`(${val("A")} ${block.getFieldValue("OP")} ${val("B")})`,JS.ORDER_ATOMIC];
@@ -83,7 +83,7 @@ function gen(block){
   return "";
 }
 Object.keys({
-console_log:1,alert:1,variable_set:1,variable_get:1,if:1,repeat:1,wait:1,function:1,return:1,comment:1,js_source:1,text:1,number:1,boolean:1,math:1,query:1,click:1,variable_change:1,game_loop:1,clear_canvas:1,draw_rect:1,draw_circle:1,draw_text:1,key_down:1,random:1,clamp:1,screen_size:1,rect_collision:1
+console_log:1,alert:1,variable_set:1,variable_get:1,if:1,repeat:1,wait:1,function:1,return:1,comment:1,js_source:1,jsblock_text:1,number:1,boolean:1,math:1,query:1,click:1,variable_change:1,game_loop:1,clear_canvas:1,draw_rect:1,draw_circle:1,draw_text:1,key_down:1,random:1,clamp:1,screen_size:1,rect_collision:1
 }).forEach(t=>JS.forBlock[t]=gen);
 
 const workspace=Blockly.inject("blocklyDiv",{
@@ -204,13 +204,13 @@ function addStarterGame(){
  sampleValue(initial,"VALUE","number",{N:300});
  const loop=sampleBlock("game_loop");
  const clear=sampleBlock("clear_canvas");
- sampleValue(clear,"COLOR","text",{TEXT:"#232d27"});
+ sampleValue(clear,"COLOR","jsblock_text",{TEXT:"#232d27"});
  sampleStatement(loop,"DO",clear);
  let tail=clear;
  for(const [key,direction] of [["ArrowLeft","-"],["ArrowRight","+"]]){
   const check=sampleBlock("if");
   const pressed=sampleValue(check,"COND","key_down");
-  sampleValue(pressed,"KEY","text",{TEXT:key});
+  sampleValue(pressed,"KEY","jsblock_text",{TEXT:key});
   const change=sampleBlock("variable_change",{NAME:"playerX",DIR:direction});
   const delta=sampleValue(change,"DELTA","math");
   delta.setFieldValue("*","OP");
@@ -224,14 +224,14 @@ function addStarterGame(){
  sampleValue(player,"Y","number",{N:145});
  sampleValue(player,"W","number",{N:42});
  sampleValue(player,"H","number",{N:42});
- sampleValue(player,"COLOR","text",{TEXT:"#fa815b"});
+ sampleValue(player,"COLOR","jsblock_text",{TEXT:"#fa815b"});
  sampleNext(tail,player);tail=player;
  const ground=sampleBlock("draw_rect");
  sampleValue(ground,"X","number",{N:0});
  sampleValue(ground,"Y","number",{N:205});
  sampleValue(ground,"W","number",{N:640});
  sampleValue(ground,"H","number",{N:155});
- sampleValue(ground,"COLOR","text",{TEXT:"#718452"});
+ sampleValue(ground,"COLOR","jsblock_text",{TEXT:"#718452"});
  sampleNext(tail,ground);
  workspace.getAllBlocks(false).reverse().forEach(block=>block.render());
  initial.moveBy(35,30);loop.moveBy(35,150);
@@ -272,6 +272,7 @@ function appendOutput(text){
  lines.push(text);output.textContent=lines.slice(-100).join("\n");output.scrollTop=output.scrollHeight;
 }
 function runGame(code=document.getElementById("code").textContent){
+ if(typeof code!=="string")code=document.getElementById("code").textContent;
  if(!code.trim()||code.startsWith("// Drag"))return;
  lastGameCode=code;
  const runId=++frameRunId;
