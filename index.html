@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>JSBlock — JavaScript Blocks</title>
-<link rel="stylesheet" href="style.css?v=20261007-1">
+<link rel="stylesheet" href="style.css?v=20261007-5">
 <script defer src="vendor/blockly/blockly.min.js"></script>
 <script defer src="vendor/blockly/javascript_compressed.js"></script>
 <script defer src="vendor/acorn/acorn.js"></script>
-<script defer src="app.js?v=20261007-1"></script>
+<script defer src="app.js?v=20261007-5"></script>
 </head>
 <body>
 <header>
@@ -18,9 +18,9 @@
   </div>
   <div class="toolbar">
     <button id="newBtn" title="New project" aria-label="New project">New</button>
-    <button id="openBtn" title="Open a JSBlock project" aria-label="Open project">Open</button>
-    <button id="importJsBtn" title="Import a JavaScript file" aria-label="Import JavaScript">Import .js</button>
-    <button id="saveBtn" title="Save a JSBlock project" aria-label="Save project">Save</button>
+    <button id="openBtn" title="Open a JSBlock project (Alt+O)" aria-label="Open project">Open</button>
+    <button id="importJsBtn" title="Import a JavaScript file (Alt+I)" aria-label="Import JavaScript">Import .js</button>
+    <button id="saveBtn" title="Save a JSBlock project (Ctrl+S)" aria-label="Save project">Save</button>
     <button id="codeBtn" title="Show generated JavaScript">Show Code</button>
     <button id="runBtn" class="green">▶ Run</button>
     <button id="exportBtn" class="primary" title="Export generated JavaScript" aria-label="Export JavaScript">⇩ Export .js</button>
@@ -30,25 +30,33 @@
   </div>
 </header>
 <input id="projectFile" type="file" accept=".json,.jsblock,application/json" hidden>
-<input id="javascriptFile" type="file" accept=".js,.mjs,.cjs,text/javascript,application/javascript" hidden>
+<input id="javascriptFile" type="file" accept=".js,.mjs,.cjs,.jsx,.ts,.tsx,text/javascript,application/javascript,text/typescript" hidden>
 
 <main class="app">
   <aside class="panel side">
     <h3>Block Library</h3>
+    <div class="block-search"><input id="blockSearch" type="search" placeholder="Search blocks..." aria-label="Search blocks"><kbd>Ctrl /</kbd></div>
     <div class="category">
       <div class="cat-title">JavaScript</div>
       <button data-block="console_log">▣ Console log</button>
+      <button data-block="console_table">▦ Console table</button>
       <button data-block="alert">◉ Alert</button>
       <button data-block="variable_set">▰ Set variable</button>
       <button data-block="variable_get">◇ Get variable</button>
       <button data-block="if">◆ If / else</button>
       <button data-block="repeat">↻ Repeat</button>
+      <button data-block="jsblock_for">↻ For loop</button>
+      <button data-block="jsblock_while">↻ While loop</button>
       <button data-block="wait">◷ Wait (async)</button>
       <button data-block="function">ƒ Function</button>
       <button data-block="return">↩ Return</button>
       <button data-block="comment">☰ Comment</button>
       <button data-block="js_source">JS JavaScript statement</button>
       <div class="cat-title">Game</div>
+      <button class="template-block" data-template="move">▶ Player movement</button>
+      <button class="template-block" data-template="coins">● Coin collector</button>
+      <button class="template-block" data-template="dodge">◆ Falling dodge</button>
+      <button class="template-block" data-template="stars">✦ Starfield runner</button>
       <button data-block="game_loop">↻ On every frame</button>
       <button data-block="clear_canvas">▧ Clear screen</button>
       <button data-block="draw_rect">▰ Draw rectangle</button>
@@ -65,23 +73,39 @@
       <button data-block="number"># Number</button>
       <button data-block="boolean">● Boolean</button>
       <button data-block="math">＋ Math</button>
+      <button data-block="jsblock_compare">⇄ Compare</button>
+      <button data-block="jsblock_logic">∧ And / or</button>
+      <button data-block="jsblock_not">¬ Not</button>
+      <div class="cat-title">Arrays &amp; objects</div>
+      <button data-block="jsblock_array">[ ] Create array</button>
+      <button data-block="jsblock_array_get"># Get array item</button>
+      <button data-block="jsblock_array_length"># Array length</button>
+      <button data-block="jsblock_array_push">＋ Add array item</button>
+      <button data-block="jsblock_object">{ } Create object</button>
+      <button data-block="jsblock_property_get">◇ Get property</button>
+      <button data-block="jsblock_property_set">▰ Set property</button>
+      <div class="cat-title">Strings</div>
+      <button data-block="jsblock_string_method">Aa Change case / trim</button>
+      <button data-block="jsblock_string_contains">⌕ Contains text</button>
+      <button data-block="jsblock_string_length"># Text length</button>
       <div class="cat-title">Web</div>
       <button data-block="query">⌕ Query element</button>
       <button data-block="click">⌁ On click</button>
+      <p id="emptySearch" hidden>No matching blocks.</p>
     </div>
   </aside>
 
   <section class="panel workspace-wrap">
     <div class="workspace-top">
       <span class="hint">Connect blocks, run your game, then use the arrow keys in the game window.</span>
-      <button id="starterBtn" title="Load a playable left/right movement example">Starter game</button>
+      <span class="shortcut-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Run <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> Stop</span>
       <span class="status" id="status">Ready</span>
     </div>
     <div id="blocklyDiv"></div>
   </section>
 
   <section class="panel right">
-    <div class="previewhead"><span>Game window</span><button id="restartBtn" title="Restart the game preview" aria-label="Restart game">↻</button></div>
+    <div class="previewhead"><span>Game window</span><div class="preview-actions"><button id="stopBtn" class="stop-button" title="Stop running code" aria-label="Stop code" disabled>■ Stop code</button><button id="restartBtn" title="Restart the game preview" aria-label="Restart game">↻</button></div></div>
     <div class="previewstage"><iframe id="gameFrame" sandbox="allow-scripts" title="Sandboxed game preview"></iframe></div>
     <div class="gamehint">ARROW KEYS / SPACE · GAME INPUT</div>
     <div class="codehead">
