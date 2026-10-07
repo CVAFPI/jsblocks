@@ -74,7 +74,7 @@ function gen(block){
     case"draw_rect":return `ctx.fillStyle = ${val("COLOR")};\nctx.fillRect(${val("X")}, ${val("Y")}, ${val("W")}, ${val("H")});\n`;
     case"draw_circle":return `ctx.beginPath();\nctx.arc(${val("X")}, ${val("Y")}, ${val("R")}, 0, Math.PI * 2);\nctx.fillStyle = ${val("COLOR")};\nctx.fill();\n`;
     case"draw_text":return `ctx.fillStyle = ${val("COLOR")};\nctx.font = ${val("SIZE")} + "px monospace";\nctx.fillText(${val("TEXT")}, ${val("X")}, ${val("Y")});\n`;
-    case"key_down":return [`keys.has(String(${val("KEY")}).toLowerCase())`,JS.ORDER_FUNCTION_CALL];
+    case"key_down":return [`keys.has(String(${val("KEY")}).toLowerCase().replace(/^ $/, "space"))`,JS.ORDER_FUNCTION_CALL];
     case"random":return [`game.random() * (${val("MAX")} - ${val("MIN")}) + ${val("MIN")}`,JS.ORDER_FUNCTION_CALL];
     case"clamp":return [`game.clamp(${val("VALUE")}, ${val("MIN")}, ${val("MAX")})`,JS.ORDER_FUNCTION_CALL];
     case"screen_size":return [block.getFieldValue("SIZE")==="height"?"game.height":"game.width",JS.ORDER_ATOMIC];
@@ -268,8 +268,8 @@ window.addEventListener("message",async event=>{
 <\/script></body></html>`;
 function appendOutput(text){
  const output=document.getElementById("output");
- const lines=(output.textContent?output.textContent.split("\\n"):[]);
- lines.push(text);output.textContent=lines.slice(-100).join("\\n");output.scrollTop=output.scrollHeight;
+ const lines=(output.textContent?output.textContent.split("\n"):[]);
+ lines.push(text);output.textContent=lines.slice(-100).join("\n");output.scrollTop=output.scrollHeight;
 }
 function runGame(code=document.getElementById("code").textContent){
  if(!code.trim()||code.startsWith("// Drag"))return;
