@@ -8,6 +8,9 @@ body{margin:0;background-color:var(--bg);background-image:linear-gradient(#fffff
 button,input,select{font:inherit}
 button{border:1px solid var(--line);background:#202b24;color:var(--text);border-radius:7px;padding:8px 11px;cursor:pointer;transition:background .15s,border-color .15s}
 button:hover{border-color:#84954a;background:#2b382c}
+.github-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--line);border-radius:7px;color:var(--text);transition:background .15s,border-color .15s}
+.github-btn:hover{border-color:#84954a;background:#2b382c}
+.github-btn svg{width:17px;height:17px}
 button.primary{background:var(--accent);color:#1b2418;border:0;font-weight:800}
 button.green{background:#294334;border-color:#496a4e}
 button.active{background:#3b4832;border-color:var(--accent)}

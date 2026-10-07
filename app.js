@@ -301,7 +301,7 @@ window.addEventListener("message",event=>{
 
 document.getElementById("newBtn").onclick=()=>{if(confirm("Clear the current project?")){workspace.clear();updateCode()}};
 document.getElementById("starterBtn").onclick=addStarterGame;
-document.getElementById("runBtn").onclick=runGame;
+document.getElementById("runBtn").onclick=()=>runGame();
 document.getElementById("restartBtn").onclick=()=>runGame(lastGameCode||document.getElementById("code").textContent);
 document.getElementById("editCodeBtn").onclick=openCodeEditor;
 document.getElementById("closeModal").onclick=closeCodeEditor;
