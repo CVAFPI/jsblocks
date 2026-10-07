@@ -40,4 +40,4 @@ The preview provides `canvas`, `ctx`, `keys`, and `game` globals. `game` include
 - `vendor/blockly/` contains Blockly 12.3.1 and its Apache-2.0 license.
 - `vendor/acorn/` contains Acorn 8.15.0 and its MIT license.
 
-See [Architecture.md](Architecture.md) for component boundaries and runtime flows. The project license is in [LICENSE](LICENSE).
+See [Architecture.md](Architecture.md) for component boundaries and runtime flows. The project license is in [LICENSE](LICENSE). want to do it on the web? go to [cvasnet](https://cvasnet.dpdns.org/codeblocks/jsblocks/), its the same and hassle free (May be offline in the weekends)
