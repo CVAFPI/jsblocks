@@ -4,54 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>JSBlock — JavaScript Blocks</title>
-<script src="https://unpkg.com/blockly@12.3.1/blockly.min.js"></script>
-<script src="https://unpkg.com/blockly@12.3.1/javascript.min.js"></script>
-<style>
-:root{
-  --bg:#07111f; --panel:#0d1b2d; --panel2:#10243a; --line:#1e3853;
-  --text:#edf6ff; --muted:#91a8bf; --accent:#48a7ff; --accent2:#7c5cff;
-  --good:#36d399; --danger:#ff6b7a; --shadow:0 18px 50px #0007;
-}
-*{box-sizing:border-box}
-body{margin:0;background:
- radial-gradient(circle at 15% 0%,#17385d 0,transparent 34%),
- radial-gradient(circle at 100% 20%,#251b56 0,transparent 30%),var(--bg);
- color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
-button,input,select{font:inherit}
-button{border:1px solid var(--line);background:#12263d;color:var(--text);border-radius:10px;padding:9px 13px;cursor:pointer;transition:.15s}
-button:hover{transform:translateY(-1px);border-color:#3c668d;background:#17304a}
-button.primary{background:linear-gradient(135deg,var(--accent),#3274ff);border:0;font-weight:700}
-button.green{background:#123c34;border-color:#1f725e}
-button.active{background:#244d73;border-color:#55b2ff}
-header{height:68px;border-bottom:1px solid #ffffff12;background:#081626dd;backdrop-filter:blur(14px);display:flex;align-items:center;padding:0 18px;gap:18px;position:sticky;top:0;z-index:10}
-.brand{display:flex;align-items:center;gap:11px;min-width:220px}
-.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#4db6ff,#7659ff);display:grid;place-items:center;font-weight:900;box-shadow:0 8px 25px #4b8dff44}
-.brand b{font-size:18px}.brand span{display:block;color:var(--muted);font-size:11px}
-.toolbar{display:flex;gap:7px;align-items:center;flex:1;justify-content:flex-end}
-.app{height:calc(100vh - 68px);display:grid;grid-template-columns:240px minmax(420px,1fr) 420px;gap:10px;padding:10px}
-.panel{background:#0a1727d9;border:1px solid #ffffff10;border-radius:15px;box-shadow:var(--shadow);overflow:hidden;min-height:0}
-.side{display:flex;flex-direction:column}.side h3,.codehead{margin:0;padding:14px 15px;border-bottom:1px solid #ffffff0d;font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:#aac0d6}
-.category{padding:10px}.category button{width:100%;text-align:left;margin:4px 0;background:#0f2135}
-.cat-title{color:#7fa2c2;font-size:11px;margin:12px 4px 5px}
-.workspace-wrap{display:flex;flex-direction:column;min-width:0}
-.workspace-top{height:48px;border-bottom:1px solid #ffffff0d;display:flex;align-items:center;gap:8px;padding:7px 10px}
-.workspace-top .hint{color:var(--muted);margin-right:auto}
-#blocklyDiv{flex:1;min-height:0}
-.right{display:flex;flex-direction:column;min-width:0}
-.codehead{display:flex;align-items:center;justify-content:space-between}
-#code{margin:0;padding:16px;overflow:auto;white-space:pre;flex:1;background:#06101c;color:#d9ecff;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
-.console{height:190px;border-top:1px solid #ffffff0d;background:#07121f;display:flex;flex-direction:column}
-.consolehead{padding:9px 13px;color:#9fb5cb;font-size:12px;display:flex;justify-content:space-between}
-#output{padding:0 13px 13px;overflow:auto;font:12px ui-monospace,monospace;color:#bfe8d9;white-space:pre-wrap}
-.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;z-index:30}
-.modal.show{display:grid}
-.modalbox{width:min(680px,92vw);background:#0c1d30;border:1px solid #ffffff18;border-radius:18px;box-shadow:var(--shadow);padding:22px}
-.modalbox h2{margin-top:0}.modalbox p{color:var(--muted)}
-textarea{width:100%;height:220px;background:#06101c;color:#d9ecff;border:1px solid var(--line);border-radius:10px;padding:12px;font:13px ui-monospace,monospace}
-.status{font-size:11px;color:var(--muted)}
-@media(max-width:1050px){.app{grid-template-columns:190px minmax(360px,1fr)}.right{display:none}}
-@media(max-width:700px){header{padding:0 10px}.brand{min-width:auto}.brand div:last-child{display:none}.app{grid-template-columns:1fr;height:auto;min-height:calc(100vh - 68px)}.side{display:none}.workspace-wrap{height:65vh}.right{display:flex;height:45vh}}
-</style>
+<link rel="stylesheet" href="style.css">
+<script defer src="vendor/blockly/blockly.min.js"></script>
+<script defer src="vendor/blockly/javascript_compressed.js"></script>
+<script defer src="vendor/acorn/acorn.js"></script>
+<script defer src="app.js"></script>
 </head>
 <body>
 <header>
@@ -60,168 +17,89 @@ textarea{width:100%;height:220px;background:#06101c;color:#d9ecff;border:1px sol
     <div><b>JSBlock</b><span>JavaScript Blocks</span></div>
   </div>
   <div class="toolbar">
-    <button id="newBtn">New</button>
-    <button id="codeBtn" class="active">Show Code</button>
+    <button id="newBtn" title="New project" aria-label="New project">New</button>
+    <button id="openBtn" title="Open a JSBlock project" aria-label="Open project">Open</button>
+    <button id="importJsBtn" title="Import a JavaScript file" aria-label="Import JavaScript">Import .js</button>
+    <button id="saveBtn" title="Save a JSBlock project" aria-label="Save project">Save</button>
+    <button id="codeBtn" title="Show generated JavaScript">Show Code</button>
     <button id="runBtn" class="green">▶ Run</button>
-    <button id="exportBtn" class="primary">⇩ Export .js</button>
+    <button id="exportBtn" class="primary" title="Export generated JavaScript" aria-label="Export JavaScript">⇩ Export .js</button>
   </div>
 </header>
+<input id="projectFile" type="file" accept=".json,.jsblock,application/json" hidden>
+<input id="javascriptFile" type="file" accept=".js,.mjs,.cjs,text/javascript,application/javascript" hidden>
 
 <main class="app">
   <aside class="panel side">
     <h3>Block Library</h3>
     <div class="category">
       <div class="cat-title">JavaScript</div>
-      <button onclick="addBlock('console_log')">▣ Console log</button>
-      <button onclick="addBlock('alert')">◉ Alert</button>
-      <button onclick="addBlock('variable_set')">▰ Set variable</button>
-      <button onclick="addBlock('variable_get')">◇ Get variable</button>
-      <button onclick="addBlock('if')">◆ If / else</button>
-      <button onclick="addBlock('repeat')">↻ Repeat</button>
-      <button onclick="addBlock('wait')">◷ Wait (async)</button>
-      <button onclick="addBlock('function')">ƒ Function</button>
-      <button onclick="addBlock('return')">↩ Return</button>
-      <button onclick="addBlock('comment')">☰ Comment</button>
+      <button data-block="console_log">▣ Console log</button>
+      <button data-block="alert">◉ Alert</button>
+      <button data-block="variable_set">▰ Set variable</button>
+      <button data-block="variable_get">◇ Get variable</button>
+      <button data-block="if">◆ If / else</button>
+      <button data-block="repeat">↻ Repeat</button>
+      <button data-block="wait">◷ Wait (async)</button>
+      <button data-block="function">ƒ Function</button>
+      <button data-block="return">↩ Return</button>
+      <button data-block="comment">☰ Comment</button>
+      <button data-block="js_source">JS JavaScript statement</button>
+      <div class="cat-title">Game</div>
+      <button data-block="game_loop">↻ On every frame</button>
+      <button data-block="clear_canvas">▧ Clear screen</button>
+      <button data-block="draw_rect">▰ Draw rectangle</button>
+      <button data-block="draw_circle">● Draw circle</button>
+      <button data-block="draw_text">T Draw text</button>
+      <button data-block="key_down">⌨ Key is down?</button>
+      <button data-block="variable_change">± Change variable</button>
+      <button data-block="random">⚄ Random number</button>
+      <button data-block="clamp">↔ Keep in range</button>
+      <button data-block="screen_size">▣ Screen width / height</button>
+      <button data-block="rect_collision">▦ Rectangle collision</button>
       <div class="cat-title">Values</div>
-      <button onclick="addBlock('text')">“ Text</button>
-      <button onclick="addBlock('number')"># Number</button>
-      <button onclick="addBlock('boolean')">● Boolean</button>
-      <button onclick="addBlock('math')">＋ Math</button>
+      <button data-block="text">“ Text</button>
+      <button data-block="number"># Number</button>
+      <button data-block="boolean">● Boolean</button>
+      <button data-block="math">＋ Math</button>
       <div class="cat-title">Web</div>
-      <button onclick="addBlock('query')">⌕ Query element</button>
-      <button onclick="addBlock('click')">⌁ On click</button>
+      <button data-block="query">⌕ Query element</button>
+      <button data-block="click">⌁ On click</button>
     </div>
   </aside>
 
   <section class="panel workspace-wrap">
     <div class="workspace-top">
-      <span class="hint">Drag blocks together. This is JavaScript—not a restricted Scratch runtime.</span>
+      <span class="hint">Connect blocks, run your game, then use the arrow keys in the game window.</span>
+      <button id="starterBtn" title="Load a playable left/right movement example">Starter game</button>
       <span class="status" id="status">Ready</span>
     </div>
     <div id="blocklyDiv"></div>
   </section>
 
   <section class="panel right">
+    <div class="previewhead"><span>Game window</span><button id="restartBtn" title="Restart the game preview" aria-label="Restart game">↻</button></div>
+    <div class="previewstage"><iframe id="gameFrame" sandbox="allow-scripts" title="Sandboxed game preview"></iframe></div>
+    <div class="gamehint">ARROW KEYS / SPACE · GAME INPUT</div>
     <div class="codehead">
       <span>Generated JavaScript</span>
-      <button id="copyBtn">Copy</button>
+      <div class="code-actions"><button id="editCodeBtn">Edit JS</button><button id="copyBtn">Copy</button></div>
     </div>
     <pre id="code">// Drag blocks into the workspace.</pre>
     <div class="console">
       <div class="consolehead"><span>Output</span><button id="clearBtn">Clear</button></div>
-      <div id="output">JSBlock console ready.</div>
+      <div id="output">Ready for your game.</div>
     </div>
   </section>
 </main>
 
 <div class="modal" id="importModal">
-  <div class="modalbox">
-    <h2>JSBlock</h2>
-    <p>Paste JavaScript here if you want to use the code side of the project directly. The block editor is intentionally not a sandbox that hides JavaScript.</p>
-    <textarea id="rawCode" placeholder="// JavaScript"></textarea>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px"><button id="closeModal">Close</button></div>
+  <div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">JavaScript playground</h2>
+    <p>Run code with canvas, ctx, keys, and game available in the isolated preview.</p>
+    <textarea id="rawCode" spellcheck="false" placeholder="// Example: ctx.fillRect(20, 20, 40, 40);"></textarea>
+    <div class="code-actions modal-actions"><button id="closeModal">Close</button><button id="runRawBtn" class="primary">Run in game</button></div>
   </div>
 </div>
-
-<script>
-const JS = javascript.javascriptGenerator;
-const define = Blockly.common.defineBlocksWithJsonArray;
-
-define([
- {type:"console_log",message0:"console.log %1",args0:[{type:"input_value",name:"VALUE"}],previousStatement:null,nextStatement:null,colour:210},
- {type:"alert",message0:"alert %1",args0:[{type:"input_value",name:"VALUE"}],previousStatement:null,nextStatement:null,colour:210},
- {type:"variable_set",message0:"set %1 to %2",args0:[{type:"field_input",name:"NAME",text:"message"},{type:"input_value",name:"VALUE"}],previousStatement:null,nextStatement:null,colour:330},
- {type:"variable_get",message0:"get %1",args0:[{type:"field_input",name:"NAME",text:"message"}],output:null,colour:330},
- {type:"if",message0:"if %1",args0:[{type:"input_value",name:"COND"}],message1:"do %1",args1:[{type:"input_statement",name:"DO"}],message2:"else %1",args2:[{type:"input_statement",name:"ELSE"}],previousStatement:null,nextStatement:null,colour:120},
- {type:"repeat",message0:"repeat %1 times",args0:[{type:"field_number",name:"N",value:10,min:0}],message1:"do %1",args1:[{type:"input_statement",name:"DO"}],previousStatement:null,nextStatement:null,colour:120},
- {type:"wait",message0:"await wait %1 ms",args0:[{type:"field_number",name:"MS",value:1000,min:0}],previousStatement:null,nextStatement:null,colour:210},
- {type:"function",message0:"function %1 (%2)",args0:[{type:"field_input",name:"NAME",text:"myFunction"},{type:"field_input",name:"ARGS",text:""}],message1:"do %1",args1:[{type:"input_statement",name:"DO"}],previousStatement:null,nextStatement:null,colour:290},
- {type:"return",message0:"return %1",args0:[{type:"input_value",name:"VALUE"}],previousStatement:null,nextStatement:null,colour:290},
- {type:"comment",message0:"// %1",args0:[{type:"field_input",name:"TEXT",text:"comment"}],previousStatement:null,nextStatement:null,colour:60},
- {type:"text",message0:"%1",args0:[{type:"field_input",name:"TEXT",text:"Hello world"}],output:null,colour:160},
- {type:"number",message0:"%1",args0:[{type:"field_number",name:"N",value:0}],output:null,colour:160},
- {type:"boolean",message0:"%1",args0:[{type:"field_dropdown",name:"V",options:[["true","true"],["false","false"]]}],output:null,colour:160},
- {type:"math",message0:"%1 %2 %3",args0:[{type:"input_value",name:"A"},{type:"field_dropdown",name:"OP",options:[["+","+"],["-","-"],["×","*"],["÷","/"],["===","==="],[">",">"],["<","<"] ]},{type:"input_value",name:"B"}],output:null,colour:160},
- {type:"query",message0:"document.querySelector %1",args0:[{type:"input_value",name:"SEL"}],output:null,colour:180},
- {type:"click",message0:"on click %1",args0:[{type:"input_value",name:"ELEMENT"}],message1:"do %1",args1:[{type:"input_statement",name:"DO"}],previousStatement:null,nextStatement:null,colour:180}
-]);
-
-function gen(block){
-  const val=n=>JS.valueToCode(block,n,JS.ORDER_ATOMIC)||"undefined";
-  const stmt=n=>JS.statementToCode(block,n);
-  switch(block.type){
-    case"console_log":return `console.log(${val("VALUE")});\n`;
-    case"alert":return `alert(${val("VALUE")});\n`;
-    case"variable_set":return `let ${block.getFieldValue("NAME")||"value"} = ${val("VALUE")};\n`;
-    case"variable_get":return [`${block.getFieldValue("NAME")||"value"}`,JS.ORDER_ATOMIC];
-    case"if":return `if (${val("COND")}) {\n${stmt("DO")}}${stmt("ELSE")?` else {\n${stmt("ELSE")}}`:``}\n`;
-    case"repeat":return `for (let i = 0; i < ${Number(block.getFieldValue("N"))||0}; i++) {\n${stmt("DO")}}\n`;
-    case"wait":return `await new Promise(resolve => setTimeout(resolve, ${Number(block.getFieldValue("MS"))||0}));\n`;
-    case"function":return `function ${block.getFieldValue("NAME")||"myFunction"}(${block.getFieldValue("ARGS")||""}) {\n${stmt("DO")}}\n`;
-    case"return":return `return ${val("VALUE")};\n`;
-    case"comment":return `// ${block.getFieldValue("TEXT")||""}\n`;
-    case"text":return [JSON.stringify(block.getFieldValue("TEXT")||""),JS.ORDER_ATOMIC];
-    case"number":return [String(Number(block.getFieldValue("N"))||0),JS.ORDER_ATOMIC];
-    case"boolean":return [block.getFieldValue("V")||"true",JS.ORDER_ATOMIC];
-    case"math":return [`(${val("A")} ${block.getFieldValue("OP")} ${val("B")})`,JS.ORDER_ATOMIC];
-    case"query":return [`document.querySelector(${val("SEL")})`,JS.ORDER_ATOMIC];
-    case"click":return `${val("ELEMENT")}.addEventListener("click", async () => {\n${stmt("DO")}});\n`;
-  }
-  return "";
-}
-Object.keys({
-console_log:1,alert:1,variable_set:1,variable_get:1,if:1,repeat:1,wait:1,function:1,return:1,comment:1,text:1,number:1,boolean:1,math:1,query:1,click:1
-}).forEach(t=>JS.forBlock[t]=gen);
-
-const workspace=Blockly.inject("blocklyDiv",{
- toolbox:false,trashcan:true,scrollbars:true,zoom:{controls:true,wheel:true,startScale:.95,maxScale:1.5,minScale:.55},
- theme:Blockly.Theme.defineTheme("jsblock",{base:Blockly.Themes.Classic,componentStyles:{workspaceBackgroundColour:"#091727",toolboxBackgroundColour:"#0c1c2d",flyoutBackgroundColour:"#0d2035",flyoutForegroundColour:"#fff",scrollbarColour:"#47627d",insertionMarkerColour:"#fff",insertionMarkerOpacity:.3,markerColour:"#5db8ff"}})
-});
-workspace.addChangeListener(updateCode);
-
-function updateCode(){
- let code=JS.workspaceToCode(workspace).trim();
- document.getElementById("code").textContent=code||"// Drag blocks into the workspace.";
- document.getElementById("status").textContent=code?`${workspace.getAllBlocks(false).length} blocks`:"Ready";
-}
-function addBlock(type){
- const b=workspace.newBlock(type); b.initSvg(); b.render();
- const top=workspace.getTopBlocks(true);
- b.moveBy(60+Math.random()*120,60+top.length*55);
- updateCode();
-}
-document.getElementById("newBtn").onclick=()=>{if(confirm("Clear the current project?")){workspace.clear();updateCode()}};
-document.getElementById("codeBtn").onclick=()=>{
- const r=document.querySelector(".right"); r.scrollIntoView({behavior:"smooth",block:"nearest"});
- document.getElementById("code").focus();
-};
-document.getElementById("copyBtn").onclick=async()=>{
- await navigator.clipboard.writeText(document.getElementById("code").textContent);
- document.getElementById("status").textContent="Copied!";
- setTimeout(updateCode,900);
-};
-document.getElementById("clearBtn").onclick=()=>document.getElementById("output").textContent="";
-document.getElementById("runBtn").onclick=async()=>{
- const code=document.getElementById("code").textContent;
- if(!code.trim()||code.startsWith("// Drag"))return;
- const out=document.getElementById("output");
- out.textContent="";
- const old=console.log;
- console.log=(...a)=>{out.textContent+=(out.textContent?"\n":"")+a.map(x=>typeof x==="object"?JSON.stringify(x):String(x)).join(" ")};
- try{
-   await Function(`"use strict"; return (async()=>{${code}\n})()` )();
-   out.textContent+=(out.textContent?"\n":"")+"✓ Finished";
- }catch(e){out.textContent+=(out.textContent?"\n":"")+"✗ "+e.stack}
- finally{console.log=old}
-};
-document.getElementById("exportBtn").onclick=()=>{
- const code=document.getElementById("code").textContent;
- const blob=new Blob([code+"\n"],{type:"text/javascript"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="jsblock-project.js";a.click();
- setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-};
-window.addEventListener("resize",()=>Blockly.svgResize(workspace));
-updateCode();
-</script>
 </body>
 </html>
